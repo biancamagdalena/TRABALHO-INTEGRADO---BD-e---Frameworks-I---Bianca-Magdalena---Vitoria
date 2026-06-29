@@ -18,9 +18,8 @@ CREATE TABLE produtos (
     cor VARCHAR(50),
     preco DECIMAL(10,2) NOT NULL,
     quantidade INT NOT NULL,
-    marca_id INT NOT NULL,
+    marca VARCHAR(100) NOT NULL,
     categoria_id INT NOT NULL,
-    FOREIGN KEY (marca_id) REFERENCES marcas(id),
     FOREIGN KEY (categoria_id) REFERENCES categorias(id)
 );
 
@@ -38,7 +37,7 @@ VALUES
 ('Batom');
 
 INSERT INTO produtos
-(nome, cor, preco, quantidade, marca_id, categoria_id)
+(nome, cor, preco, quantidade, marca, categoria_id)
 VALUES
 ('Base Líquida Pro Filtr Soft Matte Foundation', '210', 249.90, 12, 1, 1),
 

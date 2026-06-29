@@ -25,18 +25,8 @@ interface IProduto extends RowDataPacket {
   cor: string
   preco: number
   quantidade: number
-  marca_id: number
-  categoria_id: number
-}
-
-interface IProdutoNoGet extends RowDataPacket {
-  id: number
-  nome: string
-  cor: string
-  preco: number
-  quantidade: number
   marca: string
-  categoria: string
+  categoria_id: number
 }
 
 
@@ -44,20 +34,18 @@ interface IProdutoNoGet extends RowDataPacket {
 
 app.get('/produtos', async (req, res) => {
   try {
-  const [dados] = await connection.execute<IProdutoNoGet[]>(
+  const [dados] = await connection.execute<IProduto[]>(
   `SELECT
-      produtos.id,
-      produtos.nome,
-      produtos.cor,
-      produtos.preco,
-      produtos.quantidade,
-      marcas.nome AS marca,
-      categorias.nome AS categoria
-   FROM produtos
-   INNER JOIN marcas
-      ON produtos.marca_id = marcas.id
-   INNER JOIN categorias
-      ON produtos.categoria_id = categorias.id`
+    produtos.id,
+    produtos.nome,
+    produtos.cor,
+    produtos.preco,
+    produtos.quantidade,
+    produtos.marca,
+    categorias.nome AS categoria
+  FROM produtos
+  INNER JOIN categorias
+  ON produtos.categoria_id = categorias.id`
 )
     return res.status(200).json(dados)
 
@@ -67,17 +55,44 @@ app.get('/produtos', async (req, res) => {
 }
 })
 
-app.post('/produtos', async (req, res) => {
-  const { nome, cor, preco, quantidade, marca_id, categoria_id} = req.body
+app.get('/produtos/marca/:nome', async (req, res) => {
+  const { nome } = req.params
 
-  if ( !nome || !cor || preco === undefined || quantidade === undefined || !marca_id || !categoria_id){
+  try {
+    const [dados] = await connection.execute<IProduto[]>(`
+      SELECT
+        produtos.id,
+        produtos.nome,
+        produtos.cor,
+        produtos.preco,
+        produtos.quantidade,
+        produtos.marca,
+        categorias.nome AS categoria
+      FROM produtos
+      INNER JOIN categorias
+        ON produtos.categoria_id = categorias.id
+      WHERE produtos.marca = ?
+    `, [nome])
+
+    return res.status(200).json(dados)
+
+  } catch (err) {
+    const mysqlErrorHandle = new MysqlErrorHandle(err, res)
+    return mysqlErrorHandle.validar()
+  }
+})
+
+app.post('/produtos', async (req, res) => {
+  const { nome, cor, preco, quantidade, marca, categoria_id } = req.body
+
+  if ( !nome || !cor || preco === undefined || quantidade === undefined || !marca || !categoria_id){
     return res.status(400).json({ mensagem: 'Campos nome, cor, preco, quantidade, marca e categoria são obrigatórios'})
 }
 
  try {
     const [result] = await connection.execute<ResultSetHeader>(
       `INSERT INTO produtos
-      (nome, cor, preco, quantidade, marca_id, categoria_id) VALUES (?, ?, ?, ?, ?, ?)`, [nome, cor, preco, quantidade, marca_id, categoria_id]
+      (nome, cor, preco, quantidade, marca, categoria_id) VALUES (?, ?, ?, ?, ?, ?)`, [nome, cor, preco, quantidade, marca, categoria_id]
     )
 
     if (result.affectedRows === 0) {
@@ -99,7 +114,7 @@ app.post('/produtos', async (req, res) => {
 
 app.patch('/produto/:id', async (req, res) => {
   const { id } = req.params
-  const { nome, cor, preco, quantidade, marca_id, categoria_id } = req.body
+  const { nome, cor, preco, quantidade, marca, categoria_id } = req.body
 
   try {
     const [rows] = await connection.execute<IProduto[]>(
@@ -118,11 +133,11 @@ const produtoAtual = rows[0] as IProduto
     const novaCor = cor ?? produtoAtual.cor
     const novoPreco = preco ?? produtoAtual.preco
     const novaQuantidade = quantidade ?? produtoAtual.quantidade
-    const novaMarca = marca_id ?? produtoAtual.marca_id
+    const novaMarca = marca ?? produtoAtual.marca
     const novaCategoria = categoria_id ?? produtoAtual.categoria_id
 
     const [result] = await connection.execute<ResultSetHeader>(
-      `UPDATE produtos SET nome = ?, cor = ?, preco = ?, quantidade = ?, marca_id = ?, categoria_id = ? WHERE id = ?`,
+      `UPDATE produtos SET nome = ?, cor = ?, preco = ?, quantidade = ?, marca = ?, categoria_id = ? WHERE id = ?`,
       [novoNome, novaCor, novoPreco, novaQuantidade, novaMarca, novaCategoria, id]
     )
 
@@ -175,6 +190,45 @@ app.get('/marcas', async (req, res) => {
     return res.status(200).json(dados)
 
 }catch (err) {
+    const mysqlErrorHandle = new MysqlErrorHandle(err, res)
+    return mysqlErrorHandle.validar()
+  }
+})
+
+app.get('/marcas/produtos', async (req, res) => {
+  try {
+    const [dados] = await connection.execute<RowDataPacket[]>(`
+      SELECT
+        marcas.nome,
+        produtos.nome AS produto
+      FROM marcas
+      LEFT JOIN produtos
+        ON marcas.nome = produtos.marca
+    `)
+
+    return res.status(200).json(dados)
+
+  } catch (err) {
+    const mysqlErrorHandle = new MysqlErrorHandle(err, res)
+    return mysqlErrorHandle.validar()
+  }
+})
+
+app.get('/quantidade/marcas', async (req, res) => {
+  try {
+    const [dados] = await connection.execute<RowDataPacket[]>(`
+      SELECT
+        marcas.nome,
+        COUNT(produtos.id) AS quantidade_produtos
+      FROM marcas
+      LEFT JOIN produtos
+      ON marcas.nome = produtos.marca
+      GROUP BY marcas.nome
+    `)
+
+    return res.status(200).json(dados)
+
+  } catch (err) {
     const mysqlErrorHandle = new MysqlErrorHandle(err, res)
     return mysqlErrorHandle.validar()
   }

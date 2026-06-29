@@ -129,9 +129,9 @@ async function handleSalvar() {
         cor: novaCor,
         preco: Number(novoPreco),
         quantidade: Number(novaQuantidade),
-        marca_id: Number(novaMarca),
-        categoria_id: Number(novaCategoria),
-      }),
+        marca: novaMarca,
+        categoria_id: Number(novaCategoria)
+      })
     });
 
     if (!resposta.ok) {
@@ -173,9 +173,9 @@ async function handleEditar(id: number) {
         cor: corEditada,
         preco: Number(precoEditado),
         quantidade: Number(quantidadeEditada),
-        marca_id: Number(marcaEditada),
-        categoria_id: Number(categoriaEditada),
-      }),
+        marca: marcaEditada,
+        categoria_id: Number(categoriaEditada)
+      })
     });
 
     if (!resposta.ok) {
@@ -238,20 +238,14 @@ function iniciarEdicao(produto: Produto) {
   setPrecoEditado(produto.preco.toString());
   setQuantidadeEditada(produto.quantidade.toString());
 
-  const marcaSelecionada = marcas.find(
-    (marca) => marca.nome === produto.marca
-  );
-
-  if (marcaSelecionada) {
-    setMarcaEditada(marcaSelecionada.id.toString());
-  }
+  setMarcaEditada(produto.marca)
 
   const categoriaSelecionada = categorias.find(
     (categoria) => categoria.nome === produto.categoria
   );
 
   if (categoriaSelecionada) {
-    setCategoriaEditada(categoriaSelecionada.id.toString());
+    setCategoriaEditada(categoriaSelecionada.id.toString())
   }
 }
 
@@ -319,22 +313,15 @@ return (
       </div>
 
       <div style={{ marginBottom: '10px' }}>
-        <label>
-          Marca:{' '}
-          <select
-            value={novaMarca}
-            onChange={(e) => setNovaMarca(e.target.value)}
-          >
-            <option value="">Selecione</option>
-
-            {marcas.map((marca) => (
-              <option key={marca.id} value={marca.id}>
-                {marca.nome}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
+  <label>
+    Marca:{' '}
+    <input
+      type="text"
+      value={novaMarca}
+      onChange={(e) => setNovaMarca(e.target.value)}
+    />
+  </label>
+</div>
 
       <div style={{ marginBottom: '10px' }}>
         <label>
@@ -411,16 +398,14 @@ return (
           </div>
 
           <div>
-            <select
-              value={marcaEditada}
-              onChange={(e) => setMarcaEditada(e.target.value)}
-            >
-              {marcas.map((marca) => (
-                <option key={marca.id} value={marca.id}>
-                  {marca.nome}
-                </option>
-              ))}
-            </select>
+            <div>
+            <input
+               type="text"
+               value={marcaEditada}
+               onChange={(e) => setMarcaEditada(e.target.value)}
+              placeholder="Marca"
+              />
+            </div>
           </div>
 
           <div>

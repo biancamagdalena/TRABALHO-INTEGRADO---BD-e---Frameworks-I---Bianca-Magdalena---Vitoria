@@ -39,15 +39,15 @@ VALUES
 INSERT INTO produtos
 (nome, cor, preco, quantidade, marca, categoria_id)
 VALUES
-('Base Líquida Pro Filtr Soft Matte Foundation', '210', 249.90, 12, 1, 1),
+('Base Líquida Pro Filtr Soft Matte Foundation', '210', 249.90, 12, 'Fenty Beauty', 1),
 
-('Gloss Labial Gloss Bomb Universal Lip Luminizer', 'Fenty Glow', 159.90, 20, 1, 3),
+('Gloss Labial Gloss Bomb Universal Lip Luminizer', 'Fenty Glow', 159.90, 20, 'Fenty Beauty', 3),
 
-('Blush Líquido Soft Pinch Liquid Blush', 'Hope', 179.90, 15, 2, 2),
+('Blush Líquido Soft Pinch Liquid Blush', 'Hope', 179.90, 15, 'Rare Beauty', 2),
 
-('Gloss Labial Soft Pinch Tinted Lip Oil', 'Honesty', 169.90, 11, 2, 3),
+('Gloss Labial Soft Pinch Tinted Lip Oil', 'Honesty', 169.90, 11, 'Rare Beauty', 3),
 
-('Batom Dior Addict Lip Glow', '001 Pink', 239.90, 10, 3, 4),
+('Batom Dior Addict Lip Glow', '001 Pink', 239.90, 10, 'Dior Beauty', 4),
 
-('Base Líquida Forever Skin Glow Foundation', '2N', 329.90, 8, 3, 1);
+('Base Líquida Forever Skin Glow Foundation', '2N', 329.90, 8, 'Dior Beauty', 1);
 

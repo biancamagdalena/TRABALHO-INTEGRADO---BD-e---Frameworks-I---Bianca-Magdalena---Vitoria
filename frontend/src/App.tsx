@@ -158,32 +158,32 @@ async function handleSalvar() {
         marca: novaMarca,
         categoria_id: Number(novaCategoria)
       })
-    });
+    })
 
     if (!resposta.ok) {
-      const erroResposta = await resposta.json();
+      const erroResposta = await resposta.json()
       throw new Error(
         erroResposta.mensagem || 'Erro ao cadastrar produto'
-      );
+      )
     }
 
-    setNovoNome('');
-    setNovaCor('');
-    setNovoPreco('');
-    setNovaQuantidade('');
-    setNovaMarca('');
-    setNovaCategoria('');
+    setNovoNome('')
+    setNovaCor('')
+    setNovoPreco('')
+    setNovaQuantidade('')
+    setNovaMarca('')
+    setNovaCategoria('')
 
-    await carregarProdutos();
+    await carregarProdutos()
 
   } catch (e: unknown) {
     if (e instanceof Error) {
       alert(e.message);
     } else {
-      alert('Erro desconhecido ao salvar');
+      alert('Erro desconhecido ao salvar')
     }
   } finally {
-    setSalvando(false);
+    setSalvando(false)
   }
 }
 
@@ -202,30 +202,30 @@ async function handleEditar(id: number) {
         marca: marcaEditada,
         categoria_id: Number(categoriaEditada)
       })
-    });
+    })
 
     if (!resposta.ok) {
-      const erroResposta = await resposta.json();
+      const erroResposta = await resposta.json()
       throw new Error(
         erroResposta.mensagem || 'Erro ao editar produto'
-      );
+      )
     }
 
-    await carregarProdutos();
+    await carregarProdutos()
 
-    setEditandoId(null);
-    setNomeEditado('');
-    setCorEditada('');
-    setPrecoEditado('');
-    setQuantidadeEditada('');
-    setMarcaEditada('');
-    setCategoriaEditada('');
+    setEditandoId(null)
+    setNomeEditado('')
+    setCorEditada('')
+    setPrecoEditado('')
+    setQuantidadeEditada('')
+    setMarcaEditada('')
+    setCategoriaEditada('')
 
   } catch (e: unknown) {
     if (e instanceof Error) {
       alert(e.message);
     } else {
-      alert('Erro desconhecido ao editar');
+      alert('Erro desconhecido ao editar')
     }
   }
 }
@@ -233,14 +233,14 @@ async function handleEditar(id: number) {
 async function handleDeletar(id: number) {
   try {
     const resposta = await fetch(`http://localhost:8000/produto/${id}`, {
-      method: 'DELETE',
-    });
+      method: 'DELETE'
+    })
 
     if (!resposta.ok) {
       const erroResposta = await resposta.json();
       throw new Error(
         erroResposta.mensagem || 'Erro ao deletar produto'
-      );
+      )
     }
 
     setProdutos((listaAtual) =>
@@ -249,20 +249,20 @@ async function handleDeletar(id: number) {
 
   } catch (e: unknown) {
     if (e instanceof Error) {
-      alert(e.message);
+      alert(e.message)
     } else {
-      alert('Erro desconhecido ao deletar.');
+      alert('Erro desconhecido ao deletar.')
     }
   }
 }
 
 function iniciarEdicao(produto: Produto) {
-  setEditandoId(produto.id);
+  setEditandoId(produto.id)
 
-  setNomeEditado(produto.nome);
-  setCorEditada(produto.cor);
-  setPrecoEditado(produto.preco.toString());
-  setQuantidadeEditada(produto.quantidade.toString());
+  setNomeEditado(produto.nome)
+  setCorEditada(produto.cor)
+  setPrecoEditado(produto.preco.toString())
+  setQuantidadeEditada(produto.quantidade.toString())
 
   setMarcaEditada(produto.marca)
 
@@ -381,7 +381,6 @@ return (
           Novo Cadastro
         </button>
 
-        {/* FILTRO POR MARCA */}
         <div className="campo">
           <label>Filtrar por Marca:</label>
 
@@ -494,28 +493,28 @@ return (
                 <>
                   <strong>{produto.nome}</strong>
 
-                  <br />
+                  <br/>
 
                   Cor: {produto.cor}
 
-                  <br />
+                  <br/>
 
                   Preço: R$ {produto.preco}
 
-                  <br />
+                  <br/>
 
                   Quantidade: {produto.quantidade}
 
-                  <br />
+                  <br/>
 
                   Marca: {produto.marca}
 
-                  <br />
+                  <br/>
 
                   Categoria: {produto.categoria}
 
-                  <br />
-                  <br />
+                  <br/>
+                  <br/>
 
                   <button onClick={() => iniciarEdicao(produto)}>
                     Editar
@@ -535,7 +534,7 @@ return (
       </>
     )}
   </div>
-);
+)
 }
 
 export default App;
